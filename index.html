@@ -1,1099 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Check-up</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                   "Segoe UI", sans-serif;
-      color-scheme: light dark;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .app {
-      max-width: 1100px;
-      width: 100%;
-      background: rgba(15, 23, 42, 0.95);
-      border-radius: 18px;
-      padding: 20px 22px 24px;
-      box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.55),
-        0 0 0 1px rgba(148, 163, 184, 0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-    }
-
-    .title {
-      font-size: 1.4rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .subtitle {
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
-    main.layout {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    @media (min-width: 840px) {
-      main.layout {
-        flex-direction: row;
-        align-items: flex-start;
-      }
-    }
-
-    .panel {
-      background: rgba(15, 23, 42, 0.7);
-      border-radius: 14px;
-      padding: 16px 14px 14px;
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .panel-main { flex: 1.3; min-width: 0; }
-    .panel-history { flex: 1; min-width: 0; }
-
-    .panel h2 {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #9ca3af;
-      margin: 0;
-    }
-
-    .panel p { margin: 0; }
-
-    label { font-size: 0.85rem; color: #cbd5f5; }
-
-    textarea {
-      width: 100%;
-      resize: vertical;
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      background: #020617;
-      color: #e5e7eb;
-      font-family: inherit;
-      font-size: 0.9rem;
-      line-height: 1.4;
-      outline: none;
-    }
-
-    textarea:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.6);
-    }
-
-    .controls {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      background: linear-gradient(135deg, #6366f1, #7c3aed);
-      color: white;
-      cursor: pointer;
-      transition: transform 0.06s ease, box-shadow 0.06s ease, opacity 0.08s;
-      box-shadow: 0 8px 18px rgba(79, 70, 229, 0.5);
-      white-space: nowrap;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.7);
-    }
-
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 5px 14px rgba(79, 70, 229, 0.6);
-      opacity: 0.95;
-    }
-
-    .hint { font-size: 0.75rem; color: #9ca3af; }
-
-    .today-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #9ca3af;
-      margin-top: 4px;
-    }
-
-    .today-header span {
-      font-size: 0.75rem;
-      color: #6b7280;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-    .today-list {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .empty {
-      font-size: 0.8rem;
-      color: #6b7280;
-      padding: 10px 4px;
-    }
-
-    .workout-card {
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.06s ease;
-    }
-
-    .workout-card:hover {
-      transform: translateY(-1px);
-      border-color: rgba(129, 140, 248, 0.9);
-    }
-
-    .workout-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .workout-text {
-      margin: 0;
-      font-size: 0.9rem;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    .workout-meta {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      flex: 0 0 auto;
-    }
-
-    .workout-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 2px;
-      flex-wrap: wrap;
-    }
-
-    .complete-pill {
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(15, 23, 42, 0.9);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      user-select: none;
-    }
-
-    .complete-pill span { font-size: 0.8rem; }
-    .complete-pill-icon { font-size: 0.8rem; opacity: 0.9; }
-
-    .workout-card--completed {
-      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.35), rgba(15, 23, 42, 0.95));
-      border-color: rgba(34, 197, 94, 0.8);
-    }
-
-    .workout-card--completed .workout-text {
-      text-decoration: line-through;
-      opacity: 0.85;
-    }
-
-    .workout-card--completed .workout-meta { color: #a7f3d0; }
-
-    .complete-pill--completed {
-      border-color: rgba(34, 197, 94, 0.9);
-      background: rgba(22, 163, 74, 0.15);
-      color: #bbf7d0;
-    }
-
-    /* Sets */
-    .sets-wrapper {
-      margin-top: 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .sets-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sets-label {
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
-
-    .add-set-btn {
-      padding: 5px 12px;
-      font-size: 0.78rem;
-      box-shadow: none;
-      background: rgba(99, 102, 241, 0.18);
-      border: 1px solid rgba(99, 102, 241, 0.45);
-      color: #e5e7eb;
-    }
-
-    .add-set-btn:hover { transform: translateY(-1px); box-shadow: none; }
-    .add-set-btn:active { transform: translateY(0); opacity: 0.95; }
-
-    .sets-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .set-row {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 8px 8px 8px;
-      border-radius: 10px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .set-row--logged {
-      border-color: rgba(34, 197, 94, 0.45);
-      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), rgba(15, 23, 42, 0.95));
-    }
-
-    .set-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .set-label {
-      font-size: 0.78rem;
-      color: #cbd5f5;
-      min-width: 44px;
-    }
-
-    .set-actions {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    @media (max-width: 520px) {
-      .fields { grid-template-columns: 1fr; }
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .field-label {
-      font-size: 0.72rem;
-      color: #9ca3af;
-      letter-spacing: 0.02em;
-    }
-
-    .field-input {
-      padding: 7px 9px;
-      border-radius: 8px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(2, 6, 23, 0.9);
-      color: #e5e7eb;
-      font-family: inherit;
-      font-size: 0.85rem;
-      outline: none;
-    }
-
-    .field-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.6);
-    }
-
-    .locked-line {
-      font-size: 0.85rem;
-      color: #e5e7eb;
-      opacity: 0.95;
-      padding: 2px 0 0;
-      white-space: pre-wrap;
-    }
-
-    .submit-set-btn {
-      padding: 5px 10px;
-      font-size: 0.78rem;
-      box-shadow: none;
-      background: rgba(34, 197, 94, 0.14);
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      color: #bbf7d0;
-    }
-
-    .submit-set-btn:hover { transform: translateY(-1px); box-shadow: none; }
-    .submit-set-btn:active { transform: translateY(0); opacity: 0.95; }
-    .submit-set-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .remove-set-btn {
-      padding: 5px 10px;
-      font-size: 0.78rem;
-      box-shadow: none;
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #fecaca;
-    }
-
-    .remove-set-btn:hover { transform: translateY(-1px); box-shadow: none; }
-    .remove-set-btn:active { transform: translateY(0); opacity: 0.95; }
-
-    .sets-empty {
-      font-size: 0.78rem;
-      color: #6b7280;
-      padding: 2px 2px 0;
-    }
-
-    /* Totals */
-    .total-row {
-      margin-top: 2px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(2, 6, 23, 0.55);
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 10px;
-    }
-
-    .total-label {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .total-value {
-      font-size: 0.9rem;
-      color: #e5e7eb;
-      font-weight: 600;
-    }
-
-    /* History */
-    .history-list {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 460px;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
-
-    details.day-group {
-      border-radius: 8px;
-      border: 1px solid rgba(31, 41, 55, 0.9);
-      background: rgba(15, 23, 42, 0.9);
-      padding: 4px 8px 6px;
-    }
-
-    summary.day-group-summary {
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 0.8rem;
-      color: #d1d5db;
-    }
-
-    summary.day-group-summary::-webkit-details-marker { display: none; }
-
-    .day-group-title::before {
-      content: "▸";
-      display: inline-block;
-      margin-right: 6px;
-      transition: transform 0.12s ease;
-      font-size: 0.7rem;
-    }
-
-    details[open] > summary .day-group-title::before { transform: rotate(90deg); }
-
-    .day-group-count {
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
-
-    .day-group-inner {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .history-sets,
-    .history-total {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      margin-top: 2px;
-      white-space: pre-wrap;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --bg-card-hover: #202020;
+    --bg-input: #222;
+    --border: rgba(255,255,255,0.08);
+    --border-em: rgba(255,255,255,0.15);
+    --text: #f0f0f0;
+    --text-secondary: #888;
+    --text-tertiary: #555;
+    --accent: #a0c4ff;
+    --success: #6fcf97;
+    --danger: #eb5757;
+    --warning: #f2c94c;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .dash { max-width: 860px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin: 2rem 0 0.6rem;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+
+  /* weather */
+  .w-temp { font-size: 38px; font-weight: 500; line-height: 1; }
+  .w-desc { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+  .w-meta { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+  .w-side { text-align: right; font-size: 13px; color: var(--text-secondary); line-height: 1.8; }
+
+  /* numerology */
+  .num-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+  }
+  .num-big {
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--text);
+  }
+  .num-big .reduced { font-size: 20px; color: var(--text-secondary); }
+  .num-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 5px; }
+
+  .day-badge {
+    display: inline-block;
+    font-size: 11px;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+  }
+
+  /* projects */
+  .proj-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .proj-note { font-size: 14px; color: var(--text); line-height: 1.6; min-height: 44px; }
+  .proj-note .empty { color: var(--text-tertiary); font-size: 13px; }
+  .proj-ta {
+    width: 100%;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg-input);
+    border: 0.5px solid var(--border-em);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.6;
+    min-height: 70px;
+    display: none;
+    outline: none;
+  }
+  .proj-ta:focus { border-color: var(--accent); }
+  .edit-btn {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 3px 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .edit-btn:hover { background: var(--bg-card-hover); color: var(--text-secondary); }
+  .save-btn {
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: 0.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 3px 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: inherit;
+  }
+
+  /* money */
+  .money-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+  }
+  .money-input {
+    font-size: 30px;
+    font-weight: 500;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    padding: 0;
+  }
+  .money-input::-webkit-inner-spin-button,
+  .money-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .money-big { font-size: 30px; font-weight: 500; }
+  .money-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .num-big { font-size: 28px; }
+  }
+  @media (max-width: 400px) {
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-  <div class="app">
-    <header>
+<div class="dash">
+
+  <div class="section-label">weather</div>
+  <div class="card">
+    <div id="w-loading" style="font-size:13px;color:#555;">Fetching weather...</div>
+    <div id="w-content" style="display:none;display:flex;justify-content:space-between;align-items:flex-start;">
       <div>
-        <div class="title">Check-up</div>
-        <div class="subtitle">Add a workout, then submit reps + optional weight per set.</div>
+        <div class="w-temp" id="w-temp"></div>
+        <div class="w-desc" id="w-desc"></div>
+        <div class="w-meta" id="w-meta"></div>
       </div>
-      <div class="subtitle">
-        Stored locally · No account · Just you & the reps
+      <div class="w-side">
+        <div id="w-hilo"></div>
+        <div id="w-wind"></div>
+        <div id="w-humidity"></div>
       </div>
-    </header>
-
-    <main class="layout">
-      <section class="panel panel-main">
-        <h2>Today’s check-up</h2>
-        <p class="hint">
-          Add a line (e.g. <span style="opacity:0.9;">burpees</span>), then hit <span style="opacity:0.9;">Add set</span>,
-          enter reps (weight optional), and <span style="opacity:0.9;">Submit</span> to log it.
-        </p>
-
-        <label for="entryInput">Workout item</label>
-        <textarea
-          id="entryInput"
-          placeholder="Type one exercise or line here, then hit Add…"
-        ></textarea>
-
-        <div class="controls">
-          <button id="addButton">Add workout</button>
-          <span class="hint">Enter adds, Shift+Enter for a new line.</span>
-        </div>
-
-        <div class="today-header">
-          <div id="todayLabel">Today</div>
-          <span id="todayCount"></span>
-        </div>
-
-        <div id="todayList" class="today-list"></div>
-      </section>
-
-      <section class="panel panel-history">
-        <h2>Previous workouts</h2>
-        <p class="hint">
-          Grouped by day (read-only). Only submitted sets show up here.
-        </p>
-        <div id="historyList" class="history-list"></div>
-      </section>
-    </main>
+    </div>
   </div>
 
-  <script>
-    (function () {
-      const STORAGE_KEY = "checkupWorkouts";
-      let workouts = [];
-
-      function loadWorkouts() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          workouts = [];
-          return;
-        }
-        try {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            workouts = parsed.map(w => ({
-              id: w.id ?? (Date.now() + Math.random()),
-              text: w.text || "",
-              createdAt: w.createdAt || new Date().toISOString(),
-              completed: Boolean(w.completed),
-              sets: Array.isArray(w.sets)
-                ? w.sets.map(s => ({
-                    reps:
-                      typeof s?.reps === "number" || typeof s?.reps === "string"
-                        ? s.reps
-                        : "",
-                    weight: typeof s?.weight === "string" || typeof s?.weight === "number"
-                        ? s.weight
-                        : "",
-                    logged: Boolean(s?.logged)
-                  }))
-                : []
-            }));
-          } else {
-            workouts = [];
-          }
-        } catch (err) {
-          console.error("Failed to parse workouts", err);
-          workouts = [];
-        }
-      }
-
-      function saveWorkouts() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
-      }
-
-      function getDayKey(date) {
-        const d = date instanceof Date ? date : new Date(date);
-        if (isNaN(d.getTime())) return "unknown";
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        return `${y}-${m}-${day}`;
-      }
-
-      function getTodayKey() {
-        return getDayKey(new Date());
-      }
-
-      function formatDayLabel(key) {
-        if (key === "unknown") return "Unknown day";
-        const [y, m, d] = key.split("-");
-        const date = new Date(Number(y), Number(m) - 1, Number(d));
-        const todayKey = getTodayKey();
-
-        const options = { month: "short", day: "numeric" };
-        const base = date.toLocaleDateString(undefined, options);
-
-        if (key === todayKey) return `Today · ${base}`;
-        return `${base}, ${y}`;
-      }
-
-      function formatTime(iso) {
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return "";
-        return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-      }
-
-      function addWorkoutLine(text) {
-        const cleaned = (text || "").trim();
-        if (!cleaned) return;
-
-        const now = new Date();
-        const workout = {
-          id: Date.now() + Math.random(),
-          text: cleaned,
-          createdAt: now.toISOString(),
-          completed: false,
-          sets: []
-        };
-        workouts.push(workout);
-        saveWorkouts();
-      }
-
-      function toggleCompleted(id) {
-        const idx = workouts.findIndex(w => String(w.id) === String(id));
-        if (idx === -1) return;
-        workouts[idx].completed = !workouts[idx].completed;
-        saveWorkouts();
-      }
-
-      function addSet(id) {
-        const idx = workouts.findIndex(w => String(w.id) === String(id));
-        if (idx === -1) return;
-        workouts[idx].sets = Array.isArray(workouts[idx].sets) ? workouts[idx].sets : [];
-        workouts[idx].sets.push({ reps: "", weight: "", logged: false });
-        saveWorkouts();
-      }
-
-      function removeSet(id, setIndex) {
-        const idx = workouts.findIndex(w => String(w.id) === String(id));
-        if (idx === -1) return;
-        if (!Array.isArray(workouts[idx].sets)) workouts[idx].sets = [];
-        workouts[idx].sets.splice(setIndex, 1);
-        saveWorkouts();
-      }
-
-      function updateDraftField(id, setIndex, patch) {
-        const idx = workouts.findIndex(w => String(w.id) === String(id));
-        if (idx === -1) return;
-
-        if (!Array.isArray(workouts[idx].sets)) workouts[idx].sets = [];
-        if (!workouts[idx].sets[setIndex]) workouts[idx].sets[setIndex] = { reps: "", weight: "", logged: false };
-
-        workouts[idx].sets[setIndex] = {
-          ...workouts[idx].sets[setIndex],
-          ...patch,
-          logged: Boolean(workouts[idx].sets[setIndex].logged)
-        };
-
-        saveWorkouts();
-      }
-
-      function submitSet(id, setIndex) {
-        const idx = workouts.findIndex(w => String(w.id) === String(id));
-        if (idx === -1) return;
-
-        const set = workouts[idx].sets?.[setIndex];
-        if (!set) return;
-
-        const repsStr = (set.reps ?? "").toString().trim();
-        if (!repsStr) return;
-
-        set.logged = true;
-        saveWorkouts();
-      }
-
-      function groupByDay(list) {
-        const map = {};
-        list.forEach(w => {
-          const key = getDayKey(w.createdAt);
-          if (!map[key]) map[key] = [];
-          map[key].push(w);
-        });
-        return map;
-      }
-
-      function getLoggedRepTotal(workout) {
-        const sets = Array.isArray(workout?.sets) ? workout.sets : [];
-        return sets.reduce((sum, s) => {
-          if (!s?.logged) return sum;
-          const reps = Number((s?.reps ?? "").toString().trim());
-          if (!Number.isFinite(reps)) return sum;
-          return sum + reps;
-        }, 0);
-      }
-
-      function formatSetsForHistory(sets) {
-        if (!Array.isArray(sets) || !sets.length) return "";
-        const lines = sets
-          .filter(s => s?.logged)
-          .map(s => {
-            const reps = (s?.reps ?? "").toString().trim();
-            const weight = (s?.weight ?? "").toString().trim();
-            if (!reps) return "";
-            return weight ? `${reps} @ ${weight}` : `${reps}`;
-          })
-          .filter(Boolean);
-
-        if (!lines.length) return "";
-        return `Sets: ${lines.join(" · ")}`;
-      }
-
-      function render() {
-        const todayKey = getTodayKey();
-        const todayListEl = document.getElementById("todayList");
-        const todayLabelEl = document.getElementById("todayLabel");
-        const todayCountEl = document.getElementById("todayCount");
-        const historyListEl = document.getElementById("historyList");
-
-        todayListEl.innerHTML = "";
-        historyListEl.innerHTML = "";
-
-        const sorted = [...workouts].sort((a, b) => {
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        });
-
-        const grouped = groupByDay(sorted);
-        const dayKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
-
-        // Today
-        const todayWorkouts = grouped[todayKey] || [];
-        todayLabelEl.textContent = formatDayLabel(todayKey);
-        todayCountEl.textContent = todayWorkouts.length
-          ? `${todayWorkouts.filter(w => w.completed).length}/${todayWorkouts.length} done`
-          : "";
-
-        if (!todayWorkouts.length) {
-          const empty = document.createElement("p");
-          empty.className = "empty";
-          empty.textContent = "No lines yet for today. Type something above and hit Add.";
-          todayListEl.appendChild(empty);
-        } else {
-          todayWorkouts.forEach(w => {
-            const card = createWorkoutCard(w, true);
-            todayListEl.appendChild(card);
-          });
-        }
-
-        // History (all non-today) — read-only
-        const historyKeys = dayKeys.filter(k => k !== todayKey);
-        if (!historyKeys.length) {
-          const emptyHistory = document.createElement("p");
-          emptyHistory.className = "empty";
-          emptyHistory.textContent = "No previous workouts yet.";
-          historyListEl.appendChild(emptyHistory);
-        } else {
-          historyKeys.forEach(key => {
-            const dayGroup = document.createElement("details");
-            dayGroup.className = "day-group";
-
-            const summary = document.createElement("summary");
-            summary.className = "day-group-summary";
-
-            const titleSpan = document.createElement("span");
-            titleSpan.className = "day-group-title";
-            titleSpan.textContent = formatDayLabel(key);
-
-            const dayItems = grouped[key] || [];
-            const doneCount = dayItems.filter(w => w.completed).length;
-
-            const countSpan = document.createElement("span");
-            countSpan.className = "day-group-count";
-            countSpan.textContent = `${doneCount}/${dayItems.length} done`;
-
-            summary.appendChild(titleSpan);
-            summary.appendChild(countSpan);
-            dayGroup.appendChild(summary);
-
-            const inner = document.createElement("div");
-            inner.className = "day-group-inner";
-
-            dayItems.forEach(w => {
-              const miniCard = document.createElement("div");
-              miniCard.className = "workout-card" + (w.completed ? " workout-card--completed" : "");
-
-              const header = document.createElement("div");
-              header.className = "workout-card-header";
-
-              const text = document.createElement("p");
-              text.className = "workout-text";
-              text.textContent = w.text;
-
-              const meta = document.createElement("div");
-              meta.className = "workout-meta";
-              meta.textContent = formatTime(w.createdAt);
-
-              header.appendChild(text);
-              header.appendChild(meta);
-              miniCard.appendChild(header);
-
-              const setsLine = formatSetsForHistory(w.sets);
-              if (setsLine) {
-                const setsEl = document.createElement("div");
-                setsEl.className = "history-sets";
-                setsEl.textContent = setsLine;
-                miniCard.appendChild(setsEl);
-              }
-
-              const total = getLoggedRepTotal(w);
-              const totalEl = document.createElement("div");
-              totalEl.className = "history-total";
-              totalEl.textContent = `Total reps: ${total}`;
-              miniCard.appendChild(totalEl);
-
-              inner.appendChild(miniCard);
-            });
-
-            dayGroup.appendChild(inner);
-            historyListEl.appendChild(dayGroup);
-          });
-        }
-      }
-
-      function createWorkoutCard(workout, editableSets) {
-        const card = document.createElement("article");
-        card.className = "workout-card" + (workout.completed ? " workout-card--completed" : "");
-        card.dataset.id = workout.id;
-
-        const header = document.createElement("div");
-        header.className = "workout-card-header";
-
-        const text = document.createElement("p");
-        text.className = "workout-text";
-        text.textContent = workout.text;
-
-        const meta = document.createElement("div");
-        meta.className = "workout-meta";
-        meta.textContent = formatTime(workout.createdAt);
-
-        header.appendChild(text);
-        header.appendChild(meta);
-
-        const actions = document.createElement("div");
-        actions.className = "workout-actions";
-
-        const completePill = document.createElement("button");
-        completePill.type = "button";
-        completePill.className =
-          "complete-pill" + (workout.completed ? " complete-pill--completed" : "");
-        completePill.innerHTML = `
-          <span class="complete-pill-icon">${workout.completed ? "✅" : "○"}</span>
-          <span>${workout.completed ? "Completed" : "Complete"}</span>
-        `;
-
-        completePill.addEventListener("click", (event) => {
-          event.stopPropagation();
-          toggleCompleted(workout.id);
-          render();
-        });
-
-        // Card click toggles complete, UNLESS click came from inside sets controls
-        card.addEventListener("click", (event) => {
-          if (event.target.closest(".sets-wrapper")) return;
-          toggleCompleted(workout.id);
-          render();
-        });
-
-        actions.appendChild(completePill);
-
-        // Sets section
-        let setsWrapper = null;
-        if (editableSets) {
-          setsWrapper = document.createElement("div");
-          setsWrapper.className = "sets-wrapper";
-          setsWrapper.addEventListener("click", (e) => e.stopPropagation());
-
-          const labelRow = document.createElement("div");
-          labelRow.className = "sets-label-row";
-
-          const label = document.createElement("div");
-          label.className = "sets-label";
-          label.textContent = "Sets (reps + optional weight)";
-
-          const addSetBtn = document.createElement("button");
-          addSetBtn.type = "button";
-          addSetBtn.className = "add-set-btn";
-          addSetBtn.textContent = "Add set";
-
-          addSetBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            addSet(workout.id);
-            render();
-          });
-
-          labelRow.appendChild(label);
-          labelRow.appendChild(addSetBtn);
-
-          const list = document.createElement("div");
-          list.className = "sets-list";
-
-          const sets = Array.isArray(workout.sets) ? workout.sets : [];
-          if (!sets.length) {
-            const empty = document.createElement("div");
-            empty.className = "sets-empty";
-            empty.textContent = "No sets yet. Tap Add set.";
-            list.appendChild(empty);
-          } else {
-            sets.forEach((s, idx) => {
-              const row = document.createElement("div");
-              row.className = "set-row" + (s?.logged ? " set-row--logged" : "");
-
-              const top = document.createElement("div");
-              top.className = "set-top";
-
-              const setLabel = document.createElement("div");
-              setLabel.className = "set-label";
-              setLabel.textContent = `Set ${idx + 1}`;
-
-              const actionWrap = document.createElement("div");
-              actionWrap.className = "set-actions";
-
-              top.appendChild(setLabel);
-              top.appendChild(actionWrap);
-              row.appendChild(top);
-
-              if (s?.logged) {
-                const reps = (s?.reps ?? "").toString().trim();
-                const weight = (s?.weight ?? "").toString().trim();
-                const line = weight ? `${reps} reps · ${weight}` : `${reps} reps`;
-
-                const locked = document.createElement("div");
-                locked.className = "locked-line";
-                locked.textContent = `${line} · logged`;
-                row.appendChild(locked);
-              } else {
-                const fields = document.createElement("div");
-                fields.className = "fields";
-
-                const repsField = document.createElement("div");
-                repsField.className = "field";
-
-                const repsLabel = document.createElement("div");
-                repsLabel.className = "field-label";
-                repsLabel.textContent = "Reps";
-
-                const repsInput = document.createElement("input");
-                repsInput.className = "field-input";
-                repsInput.type = "number";
-                repsInput.inputMode = "numeric";
-                repsInput.min = "0";
-                repsInput.step = "1";
-                repsInput.placeholder = "e.g. 12";
-                repsInput.value = (s?.reps ?? "").toString();
-
-                repsField.appendChild(repsLabel);
-                repsField.appendChild(repsInput);
-
-                const weightField = document.createElement("div");
-                weightField.className = "field";
-
-                const weightLabel = document.createElement("div");
-                weightLabel.className = "field-label";
-                weightLabel.textContent = "Weight (optional)";
-
-                const weightInput = document.createElement("input");
-                weightInput.className = "field-input";
-                weightInput.type = "text";
-                weightInput.placeholder = "e.g. 45 lb, 20kg";
-                weightInput.value = (s?.weight ?? "").toString();
-
-                weightField.appendChild(weightLabel);
-                weightField.appendChild(weightInput);
-
-                fields.appendChild(repsField);
-                fields.appendChild(weightField);
-
-                row.appendChild(fields);
-
-                const submitBtn = document.createElement("button");
-                submitBtn.type = "button";
-                submitBtn.className = "submit-set-btn";
-                submitBtn.textContent = "Submit";
-                submitBtn.disabled = !((s?.reps ?? "").toString().trim());
-
-                repsInput.addEventListener("input", (event) => {
-                  const val = (event.target.value ?? "").toString();
-                  updateDraftField(workout.id, idx, { reps: val });
-                  submitBtn.disabled = !val.trim();
-                });
-
-                weightInput.addEventListener("input", (event) => {
-                  updateDraftField(workout.id, idx, { weight: (event.target.value ?? "").toString() });
-                });
-
-                submitBtn.addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  submitSet(workout.id, idx);
-                  render();
-                });
-
-                actionWrap.appendChild(submitBtn);
-              }
-
-              const removeBtn = document.createElement("button");
-              removeBtn.type = "button";
-              removeBtn.className = "remove-set-btn";
-              removeBtn.textContent = "Remove";
-
-              removeBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                removeSet(workout.id, idx);
-                render();
-              });
-
-              actionWrap.appendChild(removeBtn);
-
-              list.appendChild(row);
-            });
-          }
-
-          setsWrapper.appendChild(labelRow);
-          setsWrapper.appendChild(list);
-
-          // Total reps block (logged sets only)
-          const total = getLoggedRepTotal(workout);
-          const totalRow = document.createElement("div");
-          totalRow.className = "total-row";
-
-          const totalLabel = document.createElement("div");
-          totalLabel.className = "total-label";
-          totalLabel.textContent = "Total";
-
-          const totalValue = document.createElement("div");
-          totalValue.className = "total-value";
-          totalValue.textContent = `${total} reps`;
-
-          totalRow.appendChild(totalLabel);
-          totalRow.appendChild(totalValue);
-
-          setsWrapper.appendChild(totalRow);
-        }
-
-        card.appendChild(header);
-        card.appendChild(actions);
-        if (setsWrapper) card.appendChild(setsWrapper);
-
-        return card;
-      }
-
-      function setup() {
-        const entryInput = document.getElementById("entryInput");
-        const addButton = document.getElementById("addButton");
-
-        addButton.addEventListener("click", () => {
-          const value = entryInput.value;
-          if (!value.trim()) return;
-          addWorkoutLine(value);
-          entryInput.value = "";
-          render();
-        });
-
-        // Enter adds (Shift+Enter for new line)
-        entryInput.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            addButton.click();
-          }
-        });
-
-        loadWorkouts();
-        render();
-      }
-
-      window.addEventListener("DOMContentLoaded", setup);
-    })();
-  </script>
+  <div class="section-label">numerology</div>
+  <div class="grid-3" style="margin-bottom:10px;">
+    <div class="card">
+      <div class="num-label">universal year</div>
+      <div class="num-big" id="u-year"></div>
+      <div class="num-sub">2026</div>
+    </div>
+    <div class="card">
+      <div class="num-label">universal month</div>
+      <div class="num-big" id="u-month"></div>
+      <div class="num-sub" id="u-month-sub"></div>
+    </div>
+    <div class="card">
+      <div class="num-label">universal day</div>
+      <div class="num-big" id="u-day"></div>
+      <div class="num-sub" id="u-day-sub"></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="num-label">personal year</div>
+      <div class="num-big" id="p-year"></div>
+      <div class="num-sub">birthday 9/7</div>
+    </div>
+    <div class="card">
+      <div class="num-label">personal month</div>
+      <div class="num-big" id="p-month"></div>
+      <div class="num-sub">p.year + current month</div>
+    </div>
+    <div class="card">
+      <div class="num-label">personal day</div>
+      <div class="num-big" id="p-day"></div>
+      <div class="num-sub" id="p-day-sub"></div>
+    </div>
+  </div>
+  <span class="day-badge" id="day-of-year"></span>
+
+  <div class="section-label">projects</div>
+  <div class="grid-2" id="projects-grid"></div>
+
+  <div class="section-label">money</div>
+  <div class="grid-2">
+    <div class="card" style="border-color:rgba(255,255,255,0.15);">
+      <div class="money-label">money i owe</div>
+      <input class="money-input" type="number" id="money-owe" value="" placeholder="0.00" step="0.01" />
+      <div class="money-sub">bills this month</div>
+    </div>
+    <div class="card">
+      <div class="money-label">left over</div>
+      <div class="money-big" id="left-over">—</div>
+      <div class="money-sub">after bills paid</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BDAY_M = 9, BDAY_D = 7;
+
+function digitSplit(n) { return String(Math.abs(n)).split('').map(Number); }
+function sumDigits(n) { return digitSplit(n).reduce((a,b)=>a+b,0); }
+function fullReduce(n) {
+  const original = n;
+  while (n > 9 && n !== 11 && n !== 22 && n !== 33) { n = sumDigits(n); }
+  return { full: original, reduced: n };
+}
+function fmt(el, full, reduced) {
+  el.innerHTML = full === reduced
+    ? String(full)
+    : full + '<span class="reduced">/' + reduced + '</span>';
+}
+function getDayOfYear(d) {
+  return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+}
+
+function calcNumerology() {
+  const now = new Date();
+  const yr = now.getFullYear(), mo = now.getMonth()+1, dy = now.getDate();
+
+  const uYearRaw = digitSplit(yr).reduce((a,b)=>a+b,0);
+  const uYear = fullReduce(uYearRaw);
+  fmt(document.getElementById('u-year'), uYear.full, uYear.reduced);
+
+  const uMonthRaw = uYearRaw + mo;
+  const uMonth = fullReduce(uMonthRaw);
+  fmt(document.getElementById('u-month'), uMonth.full, uMonth.reduced);
+  document.getElementById('u-month-sub').textContent =
+    ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'][mo-1] + ' ' + yr;
+
+  const uDayRaw = sumDigits(mo) + sumDigits(dy) + sumDigits(yr);
+  const uDay = fullReduce(uDayRaw);
+  fmt(document.getElementById('u-day'), uDay.full, uDay.reduced);
+  document.getElementById('u-day-sub').textContent = mo+'/'+dy+'/'+yr;
+
+  const lastBdayYr = (mo > BDAY_M || (mo === BDAY_M && dy >= BDAY_D)) ? yr : yr-1;
+  const pYearRaw = BDAY_M + BDAY_D + digitSplit(lastBdayYr).reduce((a,b)=>a+b,0);
+  const pYear = fullReduce(pYearRaw);
+  fmt(document.getElementById('p-year'), pYear.full, pYear.reduced);
+
+  const pMonthRaw = pYear.full + mo;
+  const pMonth = fullReduce(pMonthRaw);
+  fmt(document.getElementById('p-month'), pMonth.full, pMonth.reduced);
+
+  const doy = getDayOfYear(now);
+  const pDayRaw = pMonth.full + doy;
+  const pDay = fullReduce(pDayRaw);
+  fmt(document.getElementById('p-day'), pDay.full, pDay.reduced);
+  document.getElementById('p-day-sub').textContent = 'p.month + day ' + doy;
+
+  const isLeap = (yr%4===0 && yr%100!==0) || yr%400===0;
+  document.getElementById('day-of-year').textContent = 'Day ' + doy + ' of ' + (isLeap ? 366 : 365);
+}
+
+const PROJECTS = [
+  { id: 'da', title: 'DA' },
+  { id: 'trading', title: 'Trading' },
+  { id: 'fitness-app', title: 'Fitness app' },
+  { id: 'fitness-protocol', title: 'Current fitness protocol' }
+];
+
+function loadProjects() {
+  const grid = document.getElementById('projects-grid');
+  grid.innerHTML = '';
+  PROJECTS.forEach(p => {
+    const saved = localStorage.getItem('proj_' + p.id) || '';
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="proj-title">${p.title}</div>
+      <div class="proj-note" id="disp-${p.id}">${saved ? saved.replace(/\n/g,'<br>') : '<span class="empty">No notes yet</span>'}</div>
+      <textarea class="proj-ta" id="edit-${p.id}">${saved}</textarea>
+      <button class="edit-btn" id="btn-${p.id}">edit</button>
+    `;
+    grid.appendChild(card);
+    document.getElementById('btn-'+p.id).addEventListener('click', () => {
+      const isEditing = document.getElementById('edit-'+p.id).style.display === 'block';
+      isEditing ? saveNote(p.id) : toggleEdit(p.id);
+    });
+  });
+}
+
+function toggleEdit(id) {
+  document.getElementById('disp-'+id).style.display = 'none';
+  document.getElementById('edit-'+id).style.display = 'block';
+  document.getElementById('edit-'+id).focus();
+  const btn = document.getElementById('btn-'+id);
+  btn.textContent = 'save';
+  btn.className = 'save-btn';
+}
+
+function saveNote(id) {
+  const val = document.getElementById('edit-'+id).value.trim();
+  localStorage.setItem('proj_'+id, val);
+  const disp = document.getElementById('disp-'+id);
+  disp.innerHTML = val ? val.replace(/\n/g,'<br>') : '<span class="empty">No notes yet</span>';
+  disp.style.display = 'block';
+  document.getElementById('edit-'+id).style.display = 'none';
+  const btn = document.getElementById('btn-'+id);
+  btn.textContent = 'edit';
+  btn.className = 'edit-btn';
+}
+
+function calcMoney() {
+  const owe = parseFloat(document.getElementById('money-owe').value);
+  const el = document.getElementById('left-over');
+  if (isNaN(owe)) { el.textContent = '—'; el.style.color = ''; return; }
+  el.textContent = '-$' + owe.toFixed(2);
+  el.style.color = owe > 0 ? '#eb5757' : '#6fcf97';
+}
+
+async function fetchWeather() {
+  if (!navigator.geolocation) {
+    document.getElementById('w-loading').textContent = 'Location unavailable';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const res = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m` +
+        `&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=1`
+      );
+      const data = await res.json();
+      const c = data.current, dl = data.daily;
+      const descs = {
+        0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+        45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+        61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
+        80:'Showers',81:'Heavy showers',95:'Thunderstorm'
+      };
+      document.getElementById('w-temp').textContent = Math.round(c.temperature_2m) + '°F';
+      document.getElementById('w-desc').textContent = descs[c.weather_code] || 'Conditions unknown';
+      document.getElementById('w-meta').textContent = 'Feels like ' + Math.round(c.apparent_temperature) + '°F';
+      document.getElementById('w-hilo').textContent = 'H:' + Math.round(dl.temperature_2m_max[0]) + '°  L:' + Math.round(dl.temperature_2m_min[0]) + '°';
+      document.getElementById('w-wind').textContent = 'Wind ' + Math.round(c.wind_speed_10m) + ' mph';
+      document.getElementById('w-humidity').textContent = 'Humidity ' + c.relative_humidity_2m + '%';
+      document.getElementById('w-loading').style.display = 'none';
+      const wc = document.getElementById('w-content');
+      wc.style.display = 'flex';
+    } catch(e) {
+      document.getElementById('w-loading').textContent = 'Could not load weather';
+    }
+  }, () => {
+    document.getElementById('w-loading').textContent = 'Allow location access to see weather';
+  });
+}
+
+calcNumerology();
+loadProjects();
+fetchWeather();
+document.getElementById('money-owe').addEventListener('input', calcMoney);
+</script>
 </body>
 </html>
