@@ -55,11 +55,13 @@
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
 
+  /* weather */
   .w-temp { font-size: 40px; font-weight: 500; color: var(--teal); line-height: 1; }
   .w-desc { font-size: 14px; color: var(--text-sec); margin-top: 5px; }
   .w-meta { font-size: 12px; color: var(--text-ter); margin-top: 3px; }
   .w-side { text-align: right; font-size: 13px; color: var(--text-sec); line-height: 2; }
 
+  /* numerology */
   .num-label {
     font-size: 10px; font-weight: 700; color: var(--text-ter);
     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px;
@@ -75,6 +77,52 @@
     color: var(--mustard); margin-top: 10px;
   }
 
+  /* todo */
+  .todo-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .todo-text-input {
+    flex: 1; font-size: 14px; color: var(--text);
+    background: var(--bg); border: 0.5px solid var(--border-em);
+    border-radius: var(--radius-sm); padding: 7px 12px;
+    font-family: inherit; outline: none;
+  }
+  .todo-text-input:focus { border-color: var(--teal-mid); }
+  .todo-add-btn {
+    font-size: 13px; font-weight: 600; color: var(--teal);
+    background: var(--teal-light); border: 0.5px solid rgba(26,107,94,0.3);
+    border-radius: var(--radius-sm); padding: 7px 16px;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+  }
+  .todo-add-btn:hover { background: #cce8e3; }
+  .todo-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .todo-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text); line-height: 1.5;
+  }
+  .todo-item.done .todo-label {
+    text-decoration: line-through; color: var(--text-ter);
+  }
+  .todo-check {
+    width: 17px; height: 17px; min-width: 17px; border-radius: 4px;
+    border: 1.5px solid var(--border-em); background: var(--bg);
+    cursor: pointer; margin-top: 2px; appearance: none;
+    -webkit-appearance: none; position: relative;
+  }
+  .todo-check:checked { background: var(--teal); border-color: var(--teal); }
+  .todo-check:checked::after {
+    content: ''; position: absolute; left: 4px; top: 1px;
+    width: 5px; height: 9px; border: 2px solid #fff;
+    border-top: none; border-left: none; transform: rotate(45deg);
+  }
+  .todo-label { flex: 1; cursor: pointer; }
+  .todo-del {
+    font-size: 16px; color: var(--text-ter); background: none;
+    border: none; cursor: pointer; padding: 0; line-height: 1;
+    margin-top: 1px; opacity: 0.5;
+  }
+  .todo-del:hover { opacity: 1; color: var(--danger); }
+  .todo-empty { font-size: 13px; color: var(--text-ter); }
+
+  /* projects */
   .proj-title {
     font-size: 10px; font-weight: 700; color: var(--text-ter);
     text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
@@ -101,10 +149,13 @@
     cursor: pointer; margin-top: 10px; font-family: inherit;
   }
 
+  /* money */
   .money-label {
     font-size: 10px; font-weight: 700; color: var(--text-ter);
     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
   }
+  .money-row { display: flex; align-items: baseline; gap: 2px; }
+  .money-sign { font-size: 30px; font-weight: 500; color: var(--text); }
   .money-input {
     font-size: 30px; font-weight: 500; width: 100%;
     background: none; border: none; color: var(--text);
@@ -112,7 +163,6 @@
   }
   .money-input::-webkit-inner-spin-button,
   .money-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .money-big { font-size: 30px; font-weight: 500; }
   .money-sub { font-size: 11px; color: var(--text-ter); margin-top: 4px; }
 
   @media (max-width: 600px) {
@@ -182,6 +232,17 @@
   </div>
   <span class="day-badge" id="day-of-year"></span>
 
+  <div class="section-label">to-do today</div>
+  <div class="card">
+    <div class="todo-input-row">
+      <input class="todo-text-input" type="text" id="todo-input" placeholder="Add a task..." />
+      <button class="todo-add-btn" id="todo-add">+ Add</button>
+    </div>
+    <ul class="todo-list" id="todo-list">
+      <li class="todo-empty" id="todo-empty">Nothing here yet</li>
+    </ul>
+  </div>
+
   <div class="section-label">projects</div>
   <div class="grid-2" id="projects-grid"></div>
 
@@ -189,13 +250,19 @@
   <div class="grid-2">
     <div class="card" style="border-color:var(--border-em);">
       <div class="money-label">money i owe</div>
-      <input class="money-input" type="number" id="money-owe" placeholder="0.00" step="0.01" />
+      <div class="money-row">
+        <span class="money-sign">$</span>
+        <input class="money-input" type="number" id="money-owe" placeholder="0.00" step="0.01" />
+      </div>
       <div class="money-sub">bills this month</div>
     </div>
-    <div class="card">
-      <div class="money-label">left over</div>
-      <div class="money-big" id="left-over" style="color:var(--text-ter);">—</div>
-      <div class="money-sub">after bills paid</div>
+    <div class="card" style="border-color:var(--border-em);">
+      <div class="money-label">money after bills</div>
+      <div class="money-row">
+        <span class="money-sign">$</span>
+        <input class="money-input" type="number" id="money-after" placeholder="0.00" step="0.01" />
+      </div>
+      <div class="money-sub">what's left</div>
     </div>
   </div>
 
@@ -255,6 +322,79 @@ function calcNumerology() {
   document.getElementById('day-of-year').textContent = 'Day ' + doy + ' of ' + (isLeap ? 366 : 365);
 }
 
+// TODO
+function loadTodos() {
+  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+  renderTodos(todos);
+}
+
+function saveTodos(todos) {
+  localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function getTodos() {
+  return JSON.parse(localStorage.getItem('todos') || '[]');
+}
+
+function renderTodos(todos) {
+  const list = document.getElementById('todo-list');
+  const empty = document.getElementById('todo-empty');
+  list.innerHTML = '';
+  if (todos.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'todo-empty';
+    li.id = 'todo-empty';
+    li.textContent = 'Nothing here yet';
+    list.appendChild(li);
+    return;
+  }
+  todos.forEach((t, i) => {
+    const li = document.createElement('li');
+    li.className = 'todo-item' + (t.done ? ' done' : '');
+    li.innerHTML = `
+      <input type="checkbox" class="todo-check" ${t.done ? 'checked' : ''} data-i="${i}" />
+      <span class="todo-label" data-i="${i}">${t.text}</span>
+      <button class="todo-del" data-i="${i}">×</button>
+    `;
+    list.appendChild(li);
+  });
+
+  list.querySelectorAll('.todo-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const todos = getTodos();
+      todos[cb.dataset.i].done = cb.checked;
+      saveTodos(todos);
+      renderTodos(todos);
+    });
+  });
+  list.querySelectorAll('.todo-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const todos = getTodos();
+      todos.splice(btn.dataset.i, 1);
+      saveTodos(todos);
+      renderTodos(todos);
+    });
+  });
+}
+
+function addTodo() {
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const todos = getTodos();
+  todos.push({ text, done: false });
+  saveTodos(todos);
+  renderTodos(todos);
+  input.value = '';
+  input.focus();
+}
+
+document.getElementById('todo-add').addEventListener('click', addTodo);
+document.getElementById('todo-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTodo();
+});
+
+// PROJECTS
 const PROJECTS = [
   { id: 'da', title: 'DA' },
   { id: 'trading', title: 'Trading' },
@@ -303,13 +443,23 @@ function saveNote(id) {
   btn.className = 'edit-btn';
 }
 
-function calcMoney() {
-  const owe = parseFloat(document.getElementById('money-owe').value);
-  const el = document.getElementById('left-over');
-  if (isNaN(owe)) { el.textContent = '—'; el.style.color = 'var(--text-ter)'; return; }
-  el.textContent = '-$' + owe.toFixed(2);
-  el.style.color = owe > 0 ? 'var(--danger)' : 'var(--teal)';
+// MONEY — both inputs just save independently
+function saveMoney() {
+  const owe = document.getElementById('money-owe').value;
+  const after = document.getElementById('money-after').value;
+  if (owe) localStorage.setItem('money_owe', owe);
+  if (after) localStorage.setItem('money_after', after);
 }
+
+function loadMoney() {
+  const owe = localStorage.getItem('money_owe');
+  const after = localStorage.getItem('money_after');
+  if (owe) document.getElementById('money-owe').value = owe;
+  if (after) document.getElementById('money-after').value = after;
+}
+
+document.getElementById('money-owe').addEventListener('input', saveMoney);
+document.getElementById('money-after').addEventListener('input', saveMoney);
 
 async function fetchWeather() {
   if (!navigator.geolocation) { document.getElementById('w-loading').textContent = 'Location unavailable'; return; }
@@ -337,10 +487,10 @@ async function fetchWeather() {
 }
 
 calcNumerology();
+loadTodos();
 loadProjects();
-calcMoney();
+loadMoney();
 fetchWeather();
-document.getElementById('money-owe').addEventListener('input', calcMoney);
 </script>
 </body>
 </html>
