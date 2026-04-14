@@ -8,21 +8,22 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0f0f0f;
-    --bg-card: #1a1a1a;
-    --bg-card-hover: #202020;
-    --bg-input: #222;
-    --border: rgba(255,255,255,0.08);
-    --border-em: rgba(255,255,255,0.15);
-    --text: #f0f0f0;
-    --text-secondary: #888;
-    --text-tertiary: #555;
-    --accent: #a0c4ff;
-    --success: #6fcf97;
-    --danger: #eb5757;
-    --warning: #f2c94c;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --bg:            #e8e0d0;
+    --bg-card:       #f2ece0;
+    --bg-card-em:    #f7f2e8;
+    --border:        rgba(100, 80, 50, 0.12);
+    --border-em:     rgba(100, 80, 50, 0.22);
+    --text:          #2c2518;
+    --text-sec:      #7a6a52;
+    --text-ter:      #a89880;
+    --teal:          #1a6b5e;
+    --teal-light:    #dff0ec;
+    --teal-mid:      #2d9b87;
+    --mustard:       #b07d10;
+    --mustard-light: #fdf3d8;
+    --danger:        #b84040;
+    --radius:        12px;
+    --radius-sm:     8px;
   }
 
   body {
@@ -37,11 +38,11 @@
 
   .section-label {
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--text-tertiary);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--text-ter);
     text-transform: uppercase;
-    margin: 2rem 0 0.6rem;
+    margin: 2rem 0 0.65rem;
   }
 
   .card {
@@ -54,108 +55,65 @@
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
 
-  /* weather */
-  .w-temp { font-size: 38px; font-weight: 500; line-height: 1; }
-  .w-desc { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
-  .w-meta { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-  .w-side { text-align: right; font-size: 13px; color: var(--text-secondary); line-height: 1.8; }
+  .w-temp { font-size: 40px; font-weight: 500; color: var(--teal); line-height: 1; }
+  .w-desc { font-size: 14px; color: var(--text-sec); margin-top: 5px; }
+  .w-meta { font-size: 12px; color: var(--text-ter); margin-top: 3px; }
+  .w-side { text-align: right; font-size: 13px; color: var(--text-sec); line-height: 2; }
 
-  /* numerology */
   .num-label {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 6px;
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px;
   }
-  .num-big {
-    font-size: 34px;
-    font-weight: 500;
-    line-height: 1;
-    color: var(--text);
-  }
-  .num-big .reduced { font-size: 20px; color: var(--text-secondary); }
-  .num-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 5px; }
+  .num-big { font-size: 34px; font-weight: 500; line-height: 1; color: var(--teal); }
+  .num-big .reduced { font-size: 20px; color: var(--text-sec); }
+  .num-sub { font-size: 11px; color: var(--text-ter); margin-top: 6px; }
 
   .day-badge {
-    display: inline-block;
-    font-size: 11px;
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 4px 10px;
-    color: var(--text-secondary);
-    margin-top: 10px;
+    display: inline-block; font-size: 11px; font-weight: 600;
+    background: var(--mustard-light); border: 0.5px solid rgba(176,125,16,0.25);
+    border-radius: var(--radius-sm); padding: 4px 12px;
+    color: var(--mustard); margin-top: 10px;
   }
 
-  /* projects */
-  .proj-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .proj-title {
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+  }
   .proj-note { font-size: 14px; color: var(--text); line-height: 1.6; min-height: 44px; }
-  .proj-note .empty { color: var(--text-tertiary); font-size: 13px; }
+  .proj-note .empty { color: var(--text-ter); font-size: 13px; }
   .proj-ta {
-    width: 100%;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--bg-input);
-    border: 0.5px solid var(--border-em);
-    border-radius: var(--radius-sm);
-    padding: 8px 10px;
-    resize: none;
-    font-family: inherit;
-    line-height: 1.6;
-    min-height: 70px;
-    display: none;
-    outline: none;
+    width: 100%; font-size: 14px; color: var(--text); background: var(--bg);
+    border: 0.5px solid var(--border-em); border-radius: var(--radius-sm);
+    padding: 8px 10px; resize: none; font-family: inherit;
+    line-height: 1.6; min-height: 70px; display: none; outline: none;
   }
-  .proj-ta:focus { border-color: var(--accent); }
+  .proj-ta:focus { border-color: var(--teal-mid); }
   .edit-btn {
-    font-size: 11px;
-    color: var(--text-tertiary);
-    background: none;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 3px 10px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: inherit;
-    transition: background 0.15s;
+    font-size: 11px; color: var(--text-ter); background: none;
+    border: 0.5px solid var(--border-em); border-radius: var(--radius-sm);
+    padding: 3px 10px; cursor: pointer; margin-top: 10px; font-family: inherit;
   }
-  .edit-btn:hover { background: var(--bg-card-hover); color: var(--text-secondary); }
+  .edit-btn:hover { background: var(--bg); }
   .save-btn {
-    font-size: 11px;
-    color: var(--accent);
-    background: none;
-    border: 0.5px solid var(--accent);
-    border-radius: var(--radius-sm);
-    padding: 3px 10px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: inherit;
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    background: var(--teal-light); border: 0.5px solid rgba(26,107,94,0.3);
+    border-radius: var(--radius-sm); padding: 3px 10px;
+    cursor: pointer; margin-top: 10px; font-family: inherit;
   }
 
-  /* money */
   .money-label {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 6px;
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
   }
   .money-input {
-    font-size: 30px;
-    font-weight: 500;
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-family: inherit;
-    outline: none;
-    padding: 0;
+    font-size: 30px; font-weight: 500; width: 100%;
+    background: none; border: none; color: var(--text);
+    font-family: inherit; outline: none; padding: 0;
   }
   .money-input::-webkit-inner-spin-button,
   .money-input::-webkit-outer-spin-button { -webkit-appearance: none; }
   .money-big { font-size: 30px; font-weight: 500; }
-  .money-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+  .money-sub { font-size: 11px; color: var(--text-ter); margin-top: 4px; }
 
   @media (max-width: 600px) {
     .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -172,8 +130,8 @@
 
   <div class="section-label">weather</div>
   <div class="card">
-    <div id="w-loading" style="font-size:13px;color:#555;">Fetching weather...</div>
-    <div id="w-content" style="display:none;display:flex;justify-content:space-between;align-items:flex-start;">
+    <div id="w-loading" style="font-size:13px;color:var(--text-ter);">Fetching weather...</div>
+    <div id="w-content" style="display:none;flex-direction:row;justify-content:space-between;align-items:flex-start;">
       <div>
         <div class="w-temp" id="w-temp"></div>
         <div class="w-desc" id="w-desc"></div>
@@ -229,20 +187,19 @@
 
   <div class="section-label">money</div>
   <div class="grid-2">
-    <div class="card" style="border-color:rgba(255,255,255,0.15);">
+    <div class="card" style="border-color:var(--border-em);">
       <div class="money-label">money i owe</div>
-      <input class="money-input" type="number" id="money-owe" value="" placeholder="0.00" step="0.01" />
+      <input class="money-input" type="number" id="money-owe" placeholder="0.00" step="0.01" />
       <div class="money-sub">bills this month</div>
     </div>
     <div class="card">
       <div class="money-label">left over</div>
-      <div class="money-big" id="left-over">—</div>
+      <div class="money-big" id="left-over" style="color:var(--text-ter);">—</div>
       <div class="money-sub">after bills paid</div>
     </div>
   </div>
 
 </div>
-
 <script>
 const BDAY_M = 9, BDAY_D = 7;
 
@@ -254,9 +211,7 @@ function fullReduce(n) {
   return { full: original, reduced: n };
 }
 function fmt(el, full, reduced) {
-  el.innerHTML = full === reduced
-    ? String(full)
-    : full + '<span class="reduced">/' + reduced + '</span>';
+  el.innerHTML = full === reduced ? String(full) : full + '<span class="reduced">/' + reduced + '</span>';
 }
 function getDayOfYear(d) {
   return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
@@ -322,8 +277,7 @@ function loadProjects() {
     `;
     grid.appendChild(card);
     document.getElementById('btn-'+p.id).addEventListener('click', () => {
-      const isEditing = document.getElementById('edit-'+p.id).style.display === 'block';
-      isEditing ? saveNote(p.id) : toggleEdit(p.id);
+      document.getElementById('edit-'+p.id).style.display === 'block' ? saveNote(p.id) : toggleEdit(p.id);
     });
   });
 }
@@ -352,16 +306,13 @@ function saveNote(id) {
 function calcMoney() {
   const owe = parseFloat(document.getElementById('money-owe').value);
   const el = document.getElementById('left-over');
-  if (isNaN(owe)) { el.textContent = '—'; el.style.color = ''; return; }
+  if (isNaN(owe)) { el.textContent = '—'; el.style.color = 'var(--text-ter)'; return; }
   el.textContent = '-$' + owe.toFixed(2);
-  el.style.color = owe > 0 ? '#eb5757' : '#6fcf97';
+  el.style.color = owe > 0 ? 'var(--danger)' : 'var(--teal)';
 }
 
 async function fetchWeather() {
-  if (!navigator.geolocation) {
-    document.getElementById('w-loading').textContent = 'Location unavailable';
-    return;
-  }
+  if (!navigator.geolocation) { document.getElementById('w-loading').textContent = 'Location unavailable'; return; }
   navigator.geolocation.getCurrentPosition(async pos => {
     try {
       const { latitude: lat, longitude: lon } = pos.coords;
@@ -372,12 +323,7 @@ async function fetchWeather() {
       );
       const data = await res.json();
       const c = data.current, dl = data.daily;
-      const descs = {
-        0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
-        45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
-        61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
-        80:'Showers',81:'Heavy showers',95:'Thunderstorm'
-      };
+      const descs = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Showers',81:'Heavy showers',95:'Thunderstorm'};
       document.getElementById('w-temp').textContent = Math.round(c.temperature_2m) + '°F';
       document.getElementById('w-desc').textContent = descs[c.weather_code] || 'Conditions unknown';
       document.getElementById('w-meta').textContent = 'Feels like ' + Math.round(c.apparent_temperature) + '°F';
@@ -385,18 +331,14 @@ async function fetchWeather() {
       document.getElementById('w-wind').textContent = 'Wind ' + Math.round(c.wind_speed_10m) + ' mph';
       document.getElementById('w-humidity').textContent = 'Humidity ' + c.relative_humidity_2m + '%';
       document.getElementById('w-loading').style.display = 'none';
-      const wc = document.getElementById('w-content');
-      wc.style.display = 'flex';
-    } catch(e) {
-      document.getElementById('w-loading').textContent = 'Could not load weather';
-    }
-  }, () => {
-    document.getElementById('w-loading').textContent = 'Allow location access to see weather';
-  });
+      document.getElementById('w-content').style.display = 'flex';
+    } catch(e) { document.getElementById('w-loading').textContent = 'Could not load weather'; }
+  }, () => { document.getElementById('w-loading').textContent = 'Allow location access to see weather'; });
 }
 
 calcNumerology();
 loadProjects();
+calcMoney();
 fetchWeather();
 document.getElementById('money-owe').addEventListener('input', calcMoney);
 </script>
