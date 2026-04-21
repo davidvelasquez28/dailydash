@@ -54,12 +54,22 @@
 
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
 
   /* weather */
   .w-temp { font-size: 40px; font-weight: 500; color: var(--teal); line-height: 1; }
   .w-desc { font-size: 14px; color: var(--text-sec); margin-top: 5px; }
   .w-meta { font-size: 12px; color: var(--text-ter); margin-top: 3px; }
   .w-side { text-align: right; font-size: 13px; color: var(--text-sec); line-height: 2; }
+
+  /* countdowns */
+  .cd-label {
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px;
+  }
+  .cd-big { font-size: 30px; font-weight: 500; line-height: 1; color: var(--mustard); }
+  .cd-unit { font-size: 12px; color: var(--text-sec); margin-left: 4px; font-weight: 400; }
+  .cd-sub { font-size: 11px; color: var(--text-ter); margin-top: 6px; }
 
   /* numerology */
   .num-label {
@@ -149,6 +159,45 @@
     cursor: pointer; margin-top: 10px; font-family: inherit;
   }
 
+  /* the problem */
+  .problem-card {
+    background: var(--bg-card-em);
+    border: 0.5px solid var(--border-em);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .problem-streak-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; margin-bottom: 6px;
+  }
+  .problem-day-label {
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+  .problem-day-num {
+    font-size: 56px; font-weight: 500; line-height: 0.95; color: var(--teal);
+  }
+  .problem-day-unit {
+    font-size: 14px; color: var(--text-sec); margin-left: 4px; font-weight: 400;
+  }
+  .problem-since {
+    font-size: 12px; color: var(--text-sec); margin-top: 8px;
+  }
+  .problem-reset-btn {
+    font-size: 11px; color: var(--danger); background: none;
+    border: 0.5px solid rgba(184,64,64,0.3); border-radius: var(--radius-sm);
+    padding: 5px 12px; cursor: pointer; font-family: inherit;
+    white-space: nowrap;
+  }
+  .problem-reset-btn:hover { background: rgba(184,64,64,0.06); }
+  .problem-divider {
+    height: 0.5px; background: var(--border); margin: 16px 0 14px;
+  }
+  .problem-solve-label {
+    font-size: 10px; font-weight: 700; color: var(--text-ter);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+
   /* money */
   .money-label {
     font-size: 10px; font-weight: 700; color: var(--text-ter);
@@ -165,13 +214,18 @@
   .money-input::-webkit-outer-spin-button { -webkit-appearance: none; }
   .money-sub { font-size: 11px; color: var(--text-ter); margin-top: 4px; }
 
+  @media (max-width: 700px) {
+    .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
   @media (max-width: 600px) {
     .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid-2 { grid-template-columns: 1fr; }
     .num-big { font-size: 28px; }
+    .cd-big { font-size: 26px; }
   }
   @media (max-width: 400px) {
     .grid-3 { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -192,6 +246,30 @@
         <div id="w-wind"></div>
         <div id="w-humidity"></div>
       </div>
+    </div>
+  </div>
+
+  <div class="section-label">countdowns</div>
+  <div class="grid-4">
+    <div class="card">
+      <div class="cd-label">next birthday</div>
+      <div class="cd-big"><span id="cd-bday">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub" id="cd-bday-sub">until 9/7</div>
+    </div>
+    <div class="card">
+      <div class="cd-label">11 personal month</div>
+      <div class="cd-big"><span id="cd-eleven">—</span><span class="cd-unit">days left</span></div>
+      <div class="cd-sub" id="cd-eleven-sub">cycle ends 5/6</div>
+    </div>
+    <div class="card">
+      <div class="cd-label">end of april</div>
+      <div class="cd-big"><span id="cd-april">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub">until 4/30</div>
+    </div>
+    <div class="card">
+      <div class="cd-label">end of 2026</div>
+      <div class="cd-big"><span id="cd-year">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub">until 12/31</div>
     </div>
   </div>
 
@@ -222,12 +300,12 @@
     <div class="card">
       <div class="num-label">personal month</div>
       <div class="num-big" id="p-month"></div>
-      <div class="num-sub">p.year + current month</div>
+      <div class="num-sub" id="p-month-sub">shifts on the 7th</div>
     </div>
     <div class="card">
       <div class="num-label">personal day</div>
       <div class="num-big" id="p-day"></div>
-      <div class="num-sub" id="p-day-sub"></div>
+      <div class="num-sub" id="p-day-sub">p.year + universal day</div>
     </div>
   </div>
   <span class="day-badge" id="day-of-year"></span>
@@ -241,6 +319,23 @@
     <ul class="todo-list" id="todo-list">
       <li class="todo-empty" id="todo-empty">Nothing here yet</li>
     </ul>
+  </div>
+
+  <div class="section-label">the problem</div>
+  <div class="problem-card">
+    <div class="problem-streak-row">
+      <div>
+        <div class="problem-day-label">current streak</div>
+        <div><span class="problem-day-num" id="problem-day">1</span><span class="problem-day-unit" id="problem-day-unit">day</span></div>
+        <div class="problem-since" id="problem-since">today is day 1</div>
+      </div>
+      <button class="problem-reset-btn" id="problem-reset">reset to day 1</button>
+    </div>
+    <div class="problem-divider"></div>
+    <div class="problem-solve-label">how to solve the problem</div>
+    <div class="proj-note" id="disp-solve"><span class="empty">No plan yet</span></div>
+    <textarea class="proj-ta" id="edit-solve" placeholder="Write your plan here..."></textarea>
+    <button class="edit-btn" id="btn-solve">edit</button>
   </div>
 
   <div class="section-label">projects</div>
@@ -270,6 +365,7 @@
 <script>
 const BDAY_M = 9, BDAY_D = 7;
 
+// --- helpers ---
 function digitSplit(n) { return String(Math.abs(n)).split('').map(Number); }
 function sumDigits(n) { return digitSplit(n).reduce((a,b)=>a+b,0); }
 function fullReduce(n) {
@@ -283,67 +379,137 @@ function fmt(el, full, reduced) {
 function getDayOfYear(d) {
   return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
 }
+function daysBetween(a, b) {
+  const ms = 86400000;
+  const a0 = new Date(a.getFullYear(), a.getMonth(), a.getDate()).getTime();
+  const b0 = new Date(b.getFullYear(), b.getMonth(), b.getDate()).getTime();
+  return Math.round((b0 - a0) / ms);
+}
 
+// Returns the calendar month (1-12) of the current personal-month window,
+// which always flips on the 7th. If today < 7, use previous calendar month.
+// Also returns the YEAR of that window's month (handles Jan rollback).
+function currentPMonthWindow(now) {
+  const d = now.getDate();
+  let mo = now.getMonth() + 1;
+  let yr = now.getFullYear();
+  if (d < BDAY_D) {
+    mo -= 1;
+    if (mo === 0) { mo = 12; yr -= 1; }
+  }
+  return { month: mo, year: yr };
+}
+
+// Start and end dates of the current personal-month window.
+function currentPMonthRange(now) {
+  const w = currentPMonthWindow(now);
+  const start = new Date(w.year, w.month - 1, BDAY_D);
+  // end is the day BEFORE the next window starts
+  let endMo = w.month + 1, endYr = w.year;
+  if (endMo === 13) { endMo = 1; endYr += 1; }
+  const nextStart = new Date(endYr, endMo - 1, BDAY_D);
+  const end = new Date(nextStart.getTime() - 86400000);
+  return { start, end, nextStart };
+}
+
+// --- numerology ---
 function calcNumerology() {
   const now = new Date();
   const yr = now.getFullYear(), mo = now.getMonth()+1, dy = now.getDate();
 
+  // universal year
   const uYearRaw = digitSplit(yr).reduce((a,b)=>a+b,0);
   const uYear = fullReduce(uYearRaw);
   fmt(document.getElementById('u-year'), uYear.full, uYear.reduced);
 
+  // universal month (uYear full + calendar month)
   const uMonthRaw = uYearRaw + mo;
   const uMonth = fullReduce(uMonthRaw);
   fmt(document.getElementById('u-month'), uMonth.full, uMonth.reduced);
   document.getElementById('u-month-sub').textContent =
     ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'][mo-1] + ' ' + yr;
 
+  // universal day = sum of all digits in m/d/y
   const uDayRaw = sumDigits(mo) + sumDigits(dy) + sumDigits(yr);
   const uDay = fullReduce(uDayRaw);
   fmt(document.getElementById('u-day'), uDay.full, uDay.reduced);
   document.getElementById('u-day-sub').textContent = mo+'/'+dy+'/'+yr;
 
+  // personal year — based on most recent past birthday
   const lastBdayYr = (mo > BDAY_M || (mo === BDAY_M && dy >= BDAY_D)) ? yr : yr-1;
   const pYearRaw = BDAY_M + BDAY_D + digitSplit(lastBdayYr).reduce((a,b)=>a+b,0);
   const pYear = fullReduce(pYearRaw);
   fmt(document.getElementById('p-year'), pYear.full, pYear.reduced);
 
-  const pMonthRaw = pYear.full + mo;
+  // personal month — p.year full + calendar month of current 7th-shifted window
+  const win = currentPMonthWindow(now);
+  const pMonthRaw = pYear.full + win.month;
   const pMonth = fullReduce(pMonthRaw);
   fmt(document.getElementById('p-month'), pMonth.full, pMonth.reduced);
+  const monthNames = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  document.getElementById('p-month-sub').textContent =
+    monthNames[win.month-1] + ' window (7th → 6th)';
 
-  const doy = getDayOfYear(now);
-  const pDayRaw = pMonth.full + doy;
+  // personal day — p.year FULL + universal day FULL (both unreduced)
+  const pDayRaw = pYear.full + uDay.full;
   const pDay = fullReduce(pDayRaw);
   fmt(document.getElementById('p-day'), pDay.full, pDay.reduced);
-  document.getElementById('p-day-sub').textContent = 'p.month + day ' + doy;
+  document.getElementById('p-day-sub').textContent =
+    'p.year (' + pYear.full + ') + u.day (' + uDay.full + ')';
 
+  // day of year badge
+  const doy = getDayOfYear(now);
   const isLeap = (yr%4===0 && yr%100!==0) || yr%400===0;
   document.getElementById('day-of-year').textContent = 'Day ' + doy + ' of ' + (isLeap ? 366 : 365);
+
+  return { pYear, pMonth };
 }
 
-// TODO
-function loadTodos() {
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-  renderTodos(todos);
+// --- countdowns ---
+function calcCountdowns(pMonth) {
+  const now = new Date();
+  const yr = now.getFullYear();
+
+  // next birthday (9/7)
+  let bday = new Date(yr, BDAY_M - 1, BDAY_D);
+  if (daysBetween(now, bday) < 0) bday = new Date(yr + 1, BDAY_M - 1, BDAY_D);
+  document.getElementById('cd-bday').textContent = daysBetween(now, bday);
+  document.getElementById('cd-bday-sub').textContent = 'until 9/7/' + bday.getFullYear();
+
+  // current personal-month window → days until it ends
+  const range = currentPMonthRange(now);
+  const daysLeftInWindow = daysBetween(now, range.nextStart); // days until next 7th
+  const el = document.getElementById('cd-eleven');
+  const subEl = document.getElementById('cd-eleven-sub');
+  const labelEl = el.closest('.card').querySelector('.cd-label');
+  // Label reflects the CURRENT personal-month value dynamically
+  labelEl.textContent = pMonth.reduced + ' personal month';
+  el.textContent = daysLeftInWindow;
+  const nextDate = range.nextStart;
+  const endDate = range.end;
+  const fmtMd = d => (d.getMonth()+1) + '/' + d.getDate();
+  subEl.textContent = 'cycle ends ' + fmtMd(endDate);
+
+  // end of april (April 30 of current or next year)
+  let april = new Date(yr, 3, 30);
+  if (daysBetween(now, april) < 0) april = new Date(yr + 1, 3, 30);
+  document.getElementById('cd-april').textContent = daysBetween(now, april);
+
+  // end of 2026
+  const eoy = new Date(2026, 11, 31);
+  document.getElementById('cd-year').textContent = Math.max(0, daysBetween(now, eoy));
 }
 
-function saveTodos(todos) {
-  localStorage.setItem('todos', JSON.stringify(todos));
-}
-
-function getTodos() {
-  return JSON.parse(localStorage.getItem('todos') || '[]');
-}
+// --- todos ---
+function getTodos() { return JSON.parse(localStorage.getItem('todos') || '[]'); }
+function saveTodos(t) { localStorage.setItem('todos', JSON.stringify(t)); }
 
 function renderTodos(todos) {
   const list = document.getElementById('todo-list');
-  const empty = document.getElementById('todo-empty');
   list.innerHTML = '';
   if (todos.length === 0) {
     const li = document.createElement('li');
     li.className = 'todo-empty';
-    li.id = 'todo-empty';
     li.textContent = 'Nothing here yet';
     list.appendChild(li);
     return;
@@ -353,9 +519,11 @@ function renderTodos(todos) {
     li.className = 'todo-item' + (t.done ? ' done' : '');
     li.innerHTML = `
       <input type="checkbox" class="todo-check" ${t.done ? 'checked' : ''} data-i="${i}" />
-      <span class="todo-label" data-i="${i}">${t.text}</span>
+      <span class="todo-label" data-i="${i}"></span>
       <button class="todo-del" data-i="${i}">×</button>
     `;
+    // set text safely to avoid HTML injection
+    li.querySelector('.todo-label').textContent = t.text;
     list.appendChild(li);
   });
 
@@ -394,11 +562,77 @@ document.getElementById('todo-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') addTodo();
 });
 
-// PROJECTS
+// --- the problem ---
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function isoToDate(iso) {
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function prettyDate(d) {
+  const months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  return months[d.getMonth()] + ' ' + d.getDate();
+}
+
+function loadProblem() {
+  let startIso = localStorage.getItem('problem_start');
+  if (!startIso) {
+    startIso = todayISO();
+    localStorage.setItem('problem_start', startIso);
+  }
+  const start = isoToDate(startIso);
+  const dayNum = daysBetween(start, new Date()) + 1;
+  document.getElementById('problem-day').textContent = dayNum;
+  document.getElementById('problem-day-unit').textContent = dayNum === 1 ? 'day' : 'days';
+  document.getElementById('problem-since').textContent =
+    dayNum === 1
+      ? 'today is day 1 (' + prettyDate(start) + ')'
+      : 'since ' + prettyDate(start);
+
+  const savedSolve = localStorage.getItem('problem_solve') || '';
+  const dispSolve = document.getElementById('disp-solve');
+  const editSolve = document.getElementById('edit-solve');
+  dispSolve.innerHTML = savedSolve
+    ? savedSolve.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')
+    : '<span class="empty">No plan yet</span>';
+  editSolve.value = savedSolve;
+}
+
+document.getElementById('problem-reset').addEventListener('click', () => {
+  if (!confirm('Reset streak to day 1?')) return;
+  localStorage.setItem('problem_start', todayISO());
+  loadProblem();
+});
+
+document.getElementById('btn-solve').addEventListener('click', () => {
+  const ta = document.getElementById('edit-solve');
+  const btn = document.getElementById('btn-solve');
+  const disp = document.getElementById('disp-solve');
+  if (ta.style.display === 'block') {
+    const val = ta.value.trim();
+    localStorage.setItem('problem_solve', val);
+    disp.innerHTML = val
+      ? val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')
+      : '<span class="empty">No plan yet</span>';
+    disp.style.display = 'block';
+    ta.style.display = 'none';
+    btn.textContent = 'edit';
+    btn.className = 'edit-btn';
+  } else {
+    disp.style.display = 'none';
+    ta.style.display = 'block';
+    ta.focus();
+    btn.textContent = 'save';
+    btn.className = 'save-btn';
+  }
+});
+
+// --- projects (fitness app removed) ---
 const PROJECTS = [
   { id: 'da', title: 'DA' },
   { id: 'trading', title: 'Trading' },
-  { id: 'fitness-app', title: 'Fitness app' },
   { id: 'fitness-protocol', title: 'Current fitness protocol' }
 ];
 
@@ -409,15 +643,20 @@ function loadProjects() {
     const saved = localStorage.getItem('proj_' + p.id) || '';
     const card = document.createElement('div');
     card.className = 'card';
+    const safe = saved
+      ? saved.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')
+      : '<span class="empty">No notes yet</span>';
     card.innerHTML = `
       <div class="proj-title">${p.title}</div>
-      <div class="proj-note" id="disp-${p.id}">${saved ? saved.replace(/\n/g,'<br>') : '<span class="empty">No notes yet</span>'}</div>
-      <textarea class="proj-ta" id="edit-${p.id}">${saved}</textarea>
+      <div class="proj-note" id="disp-${p.id}">${safe}</div>
+      <textarea class="proj-ta" id="edit-${p.id}"></textarea>
       <button class="edit-btn" id="btn-${p.id}">edit</button>
     `;
     grid.appendChild(card);
+    document.getElementById('edit-'+p.id).value = saved;
     document.getElementById('btn-'+p.id).addEventListener('click', () => {
-      document.getElementById('edit-'+p.id).style.display === 'block' ? saveNote(p.id) : toggleEdit(p.id);
+      document.getElementById('edit-'+p.id).style.display === 'block'
+        ? saveNote(p.id) : toggleEdit(p.id);
     });
   });
 }
@@ -435,7 +674,9 @@ function saveNote(id) {
   const val = document.getElementById('edit-'+id).value.trim();
   localStorage.setItem('proj_'+id, val);
   const disp = document.getElementById('disp-'+id);
-  disp.innerHTML = val ? val.replace(/\n/g,'<br>') : '<span class="empty">No notes yet</span>';
+  disp.innerHTML = val
+    ? val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')
+    : '<span class="empty">No notes yet</span>';
   disp.style.display = 'block';
   document.getElementById('edit-'+id).style.display = 'none';
   const btn = document.getElementById('btn-'+id);
@@ -443,12 +684,12 @@ function saveNote(id) {
   btn.className = 'edit-btn';
 }
 
-// MONEY — both inputs just save independently
+// --- money ---
 function saveMoney() {
   const owe = document.getElementById('money-owe').value;
   const after = document.getElementById('money-after').value;
-  if (owe) localStorage.setItem('money_owe', owe);
-  if (after) localStorage.setItem('money_after', after);
+  localStorage.setItem('money_owe', owe);
+  localStorage.setItem('money_after', after);
 }
 
 function loadMoney() {
@@ -461,6 +702,7 @@ function loadMoney() {
 document.getElementById('money-owe').addEventListener('input', saveMoney);
 document.getElementById('money-after').addEventListener('input', saveMoney);
 
+// --- weather ---
 async function fetchWeather() {
   if (!navigator.geolocation) { document.getElementById('w-loading').textContent = 'Location unavailable'; return; }
   navigator.geolocation.getCurrentPosition(async pos => {
@@ -486,8 +728,11 @@ async function fetchWeather() {
   }, () => { document.getElementById('w-loading').textContent = 'Allow location access to see weather'; });
 }
 
-calcNumerology();
-loadTodos();
+// --- boot ---
+const num = calcNumerology();
+calcCountdowns(num.pMonth);
+renderTodos(getTodos());
+loadProblem();
 loadProjects();
 loadMoney();
 fetchWeather();
