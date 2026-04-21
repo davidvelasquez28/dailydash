@@ -87,50 +87,66 @@
     color: var(--mustard); margin-top: 10px;
   }
 
-  /* todo */
-  .todo-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
-  .todo-text-input {
-    flex: 1; font-size: 14px; color: var(--text);
+  /* important dates */
+  .dates-input-row {
+    display: grid; grid-template-columns: 130px 1fr auto;
+    gap: 8px; margin-bottom: 14px;
+  }
+  .dates-input-row input[type="date"],
+  .dates-text-input {
+    font-size: 14px; color: var(--text);
     background: var(--bg); border: 0.5px solid var(--border-em);
     border-radius: var(--radius-sm); padding: 7px 12px;
     font-family: inherit; outline: none;
   }
-  .todo-text-input:focus { border-color: var(--teal-mid); }
-  .todo-add-btn {
+  .dates-input-row input[type="date"]:focus,
+  .dates-text-input:focus { border-color: var(--teal-mid); }
+  .dates-add-btn {
     font-size: 13px; font-weight: 600; color: var(--teal);
     background: var(--teal-light); border: 0.5px solid rgba(26,107,94,0.3);
     border-radius: var(--radius-sm); padding: 7px 16px;
     cursor: pointer; font-family: inherit; white-space: nowrap;
   }
-  .todo-add-btn:hover { background: #cce8e3; }
-  .todo-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .todo-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; color: var(--text); line-height: 1.5;
+  .dates-add-btn:hover { background: #cce8e3; }
+
+  .dates-list { list-style: none; display: flex; flex-direction: column; }
+  .date-row {
+    display: grid; grid-template-columns: 72px 1fr auto auto;
+    gap: 12px; align-items: baseline;
+    padding: 11px 0; border-top: 0.5px solid var(--border);
   }
-  .todo-item.done .todo-label {
-    text-decoration: line-through; color: var(--text-ter);
+  .date-row:first-child { border-top: none; padding-top: 2px; }
+  .date-row.next {
+    position: relative;
   }
-  .todo-check {
-    width: 17px; height: 17px; min-width: 17px; border-radius: 4px;
-    border: 1.5px solid var(--border-em); background: var(--bg);
-    cursor: pointer; margin-top: 2px; appearance: none;
-    -webkit-appearance: none; position: relative;
+  .date-row.next::before {
+    content: ''; position: absolute; left: -14px; top: 50%;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--mustard); transform: translateY(-50%);
   }
-  .todo-check:checked { background: var(--teal); border-color: var(--teal); }
-  .todo-check:checked::after {
-    content: ''; position: absolute; left: 4px; top: 1px;
-    width: 5px; height: 9px; border: 2px solid #fff;
-    border-top: none; border-left: none; transform: rotate(45deg);
+  .date-row.today::before { background: var(--teal); }
+
+  .date-when {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    letter-spacing: 0.03em; text-transform: uppercase;
   }
-  .todo-label { flex: 1; cursor: pointer; }
-  .todo-del {
+  .date-label {
+    font-size: 14px; color: var(--text); line-height: 1.4;
+  }
+  .date-count {
+    font-size: 12px; color: var(--text-sec);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .date-count.today-flag { color: var(--teal); font-weight: 600; }
+  .date-count.soon { color: var(--mustard); font-weight: 600; }
+  .date-del {
     font-size: 16px; color: var(--text-ter); background: none;
     border: none; cursor: pointer; padding: 0; line-height: 1;
-    margin-top: 1px; opacity: 0.5;
+    opacity: 0.4; align-self: center;
   }
-  .todo-del:hover { opacity: 1; color: var(--danger); }
-  .todo-empty { font-size: 13px; color: var(--text-ter); }
+  .date-del:hover { opacity: 1; color: var(--danger); }
+  .dates-empty { font-size: 13px; color: var(--text-ter); padding: 4px 0; }
 
   /* projects */
   .proj-title {
@@ -222,6 +238,10 @@
     .grid-2 { grid-template-columns: 1fr; }
     .num-big { font-size: 28px; }
     .cd-big { font-size: 26px; }
+    .dates-input-row { grid-template-columns: 1fr; }
+    .date-row { grid-template-columns: 68px 1fr auto; }
+    .date-row .date-count { grid-column: 2 / 4; margin-top: -4px; }
+    .date-row .date-del { grid-column: 3; grid-row: 1; }
   }
   @media (max-width: 400px) {
     .grid-3 { grid-template-columns: 1fr; }
@@ -246,30 +266,6 @@
         <div id="w-wind"></div>
         <div id="w-humidity"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="section-label">countdowns</div>
-  <div class="grid-4">
-    <div class="card">
-      <div class="cd-label">next birthday</div>
-      <div class="cd-big"><span id="cd-bday">—</span><span class="cd-unit">days</span></div>
-      <div class="cd-sub" id="cd-bday-sub">until 9/7</div>
-    </div>
-    <div class="card">
-      <div class="cd-label">11 personal month</div>
-      <div class="cd-big"><span id="cd-eleven">—</span><span class="cd-unit">days left</span></div>
-      <div class="cd-sub" id="cd-eleven-sub">cycle ends 5/6</div>
-    </div>
-    <div class="card">
-      <div class="cd-label">end of april</div>
-      <div class="cd-big"><span id="cd-april">—</span><span class="cd-unit">days</span></div>
-      <div class="cd-sub">until 4/30</div>
-    </div>
-    <div class="card">
-      <div class="cd-label">end of 2026</div>
-      <div class="cd-big"><span id="cd-year">—</span><span class="cd-unit">days</span></div>
-      <div class="cd-sub">until 12/31</div>
     </div>
   </div>
 
@@ -310,14 +306,39 @@
   </div>
   <span class="day-badge" id="day-of-year"></span>
 
-  <div class="section-label">to-do today</div>
-  <div class="card">
-    <div class="todo-input-row">
-      <input class="todo-text-input" type="text" id="todo-input" placeholder="Add a task..." />
-      <button class="todo-add-btn" id="todo-add">+ Add</button>
+  <div class="section-label">countdowns</div>
+  <div class="grid-4">
+    <div class="card">
+      <div class="cd-label">next birthday</div>
+      <div class="cd-big"><span id="cd-bday">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub" id="cd-bday-sub">until 9/7</div>
     </div>
-    <ul class="todo-list" id="todo-list">
-      <li class="todo-empty" id="todo-empty">Nothing here yet</li>
+    <div class="card">
+      <div class="cd-label">11 personal month</div>
+      <div class="cd-big"><span id="cd-eleven">—</span><span class="cd-unit">days left</span></div>
+      <div class="cd-sub" id="cd-eleven-sub">cycle ends 5/6</div>
+    </div>
+    <div class="card">
+      <div class="cd-label">end of april</div>
+      <div class="cd-big"><span id="cd-april">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub">until 4/30</div>
+    </div>
+    <div class="card">
+      <div class="cd-label">end of 2026</div>
+      <div class="cd-big"><span id="cd-year">—</span><span class="cd-unit">days</span></div>
+      <div class="cd-sub">until 12/31</div>
+    </div>
+  </div>
+
+  <div class="section-label">important dates</div>
+  <div class="card">
+    <div class="dates-input-row">
+      <input type="date" id="dates-date" />
+      <input type="text" class="dates-text-input" id="dates-label" placeholder="What's happening?" />
+      <button class="dates-add-btn" id="dates-add">+ Add</button>
+    </div>
+    <ul class="dates-list" id="dates-list">
+      <li class="dates-empty" id="dates-empty">Nothing on the horizon</li>
     </ul>
   </div>
 
@@ -500,66 +521,111 @@ function calcCountdowns(pMonth) {
   document.getElementById('cd-year').textContent = Math.max(0, daysBetween(now, eoy));
 }
 
-// --- todos ---
-function getTodos() { return JSON.parse(localStorage.getItem('todos') || '[]'); }
-function saveTodos(t) { localStorage.setItem('todos', JSON.stringify(t)); }
+// --- important dates ---
+function getDates() {
+  return JSON.parse(localStorage.getItem('important_dates') || '[]');
+}
+function saveDates(d) { localStorage.setItem('important_dates', JSON.stringify(d)); }
 
-function renderTodos(todos) {
-  const list = document.getElementById('todo-list');
-  list.innerHTML = '';
-  if (todos.length === 0) {
+// Purge events whose date was yesterday or earlier
+function purgePastDates() {
+  const list = getDates();
+  const todayStart = new Date();
+  todayStart.setHours(0,0,0,0);
+  const kept = list.filter(e => isoToDate(e.date).getTime() >= todayStart.getTime());
+  if (kept.length !== list.length) saveDates(kept);
+  return kept;
+}
+
+function formatDateShort(d) {
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return months[d.getMonth()] + ' ' + d.getDate();
+}
+
+function renderDates() {
+  const list = purgePastDates()
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const ul = document.getElementById('dates-list');
+  ul.innerHTML = '';
+
+  if (list.length === 0) {
     const li = document.createElement('li');
-    li.className = 'todo-empty';
-    li.textContent = 'Nothing here yet';
-    list.appendChild(li);
+    li.className = 'dates-empty';
+    li.textContent = 'Nothing on the horizon';
+    ul.appendChild(li);
     return;
   }
-  todos.forEach((t, i) => {
+
+  const now = new Date();
+  // find index of first non-today upcoming event to mark as "next"
+  let nextIdx = -1;
+  for (let i = 0; i < list.length; i++) {
+    const diff = daysBetween(now, isoToDate(list[i].date));
+    if (diff > 0) { nextIdx = i; break; }
+  }
+
+  list.forEach((e, i) => {
+    const d = isoToDate(e.date);
+    const diff = daysBetween(now, d);
     const li = document.createElement('li');
-    li.className = 'todo-item' + (t.done ? ' done' : '');
+    li.className = 'date-row';
+    if (diff === 0) li.classList.add('today');
+    else if (i === nextIdx) li.classList.add('next');
+
+    let countText, countClass = '';
+    if (diff === 0) { countText = 'today'; countClass = 'today-flag'; }
+    else if (diff === 1) { countText = 'tomorrow'; countClass = 'soon'; }
+    else if (diff <= 7) { countText = diff + ' days'; countClass = 'soon'; }
+    else { countText = diff + ' days'; }
+
     li.innerHTML = `
-      <input type="checkbox" class="todo-check" ${t.done ? 'checked' : ''} data-i="${i}" />
-      <span class="todo-label" data-i="${i}"></span>
-      <button class="todo-del" data-i="${i}">×</button>
+      <span class="date-when">${formatDateShort(d)}</span>
+      <span class="date-label"></span>
+      <span class="date-count ${countClass}">${countText}</span>
+      <button class="date-del" data-id="${e.id}" aria-label="delete">×</button>
     `;
-    // set text safely to avoid HTML injection
-    li.querySelector('.todo-label').textContent = t.text;
-    list.appendChild(li);
+    li.querySelector('.date-label').textContent = e.label;
+    ul.appendChild(li);
   });
 
-  list.querySelectorAll('.todo-check').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const todos = getTodos();
-      todos[cb.dataset.i].done = cb.checked;
-      saveTodos(todos);
-      renderTodos(todos);
-    });
-  });
-  list.querySelectorAll('.todo-del').forEach(btn => {
+  ul.querySelectorAll('.date-del').forEach(btn => {
     btn.addEventListener('click', () => {
-      const todos = getTodos();
-      todos.splice(btn.dataset.i, 1);
-      saveTodos(todos);
-      renderTodos(todos);
+      const list = getDates().filter(e => e.id !== btn.dataset.id);
+      saveDates(list);
+      renderDates();
     });
   });
 }
 
-function addTodo() {
-  const input = document.getElementById('todo-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const todos = getTodos();
-  todos.push({ text, done: false });
-  saveTodos(todos);
-  renderTodos(todos);
-  input.value = '';
-  input.focus();
+function addDate() {
+  const dateInput = document.getElementById('dates-date');
+  const labelInput = document.getElementById('dates-label');
+  const date = dateInput.value;
+  const label = labelInput.value.trim();
+  if (!date || !label) return;
+  // reject past dates (before today)
+  const picked = isoToDate(date);
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (picked.getTime() < today.getTime()) {
+    alert("That date is in the past.");
+    return;
+  }
+  const list = getDates();
+  list.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), date, label });
+  saveDates(list);
+  dateInput.value = '';
+  labelInput.value = '';
+  renderDates();
+  labelInput.focus();
 }
 
-document.getElementById('todo-add').addEventListener('click', addTodo);
-document.getElementById('todo-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addTodo();
+document.getElementById('dates-add').addEventListener('click', addDate);
+document.getElementById('dates-label').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addDate();
+});
+document.getElementById('dates-date').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addDate();
 });
 
 // --- the problem ---
@@ -731,7 +797,7 @@ async function fetchWeather() {
 // --- boot ---
 const num = calcNumerology();
 calcCountdowns(num.pMonth);
-renderTodos(getTodos());
+renderDates();
 loadProblem();
 loadProjects();
 loadMoney();
